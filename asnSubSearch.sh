@@ -15,8 +15,8 @@
 
 
 # [+]  Read these vaules in through args or change var names to work in existing script
-DOMAIN="aksjfdnjn.com"
-ASN="55924" 				# ASN Optional but prefered!
+DOMAIN="example.com"
+ASN="00000" 				# ASN Optional but prefered!
 
 
 # Get asn data list 	(Uncomment if you dont already have the ASN data)
