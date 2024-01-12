@@ -5,7 +5,6 @@
 # 	Creates file: <company>.ipList - unpacked list of all IP in ASN IP allranges
 # 	Creates file: <company>.newSubs - A list of the newly found subdomains
 #	Runs every IP through hakip2host & dnsx to resolve and validate endpoints
-# 	Adds newly discovered subdomains to specified file <CURRENT_SUBDOMAIN_LIST> (Makes backup of original)
 
 
 # [+]  Read these vaules in through args or change var names to work in existing script
