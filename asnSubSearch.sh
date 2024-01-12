@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # WHAT IT CAN DO
 # 	Creates file: <company>.ipRange - a list all ip ranges owned by companies ASN
 # 	Creates file: <company>.ipList - unpacked list of all IP in ASN IP allranges
@@ -10,8 +9,8 @@
 
 
 # [+]  Read these vaules in through args or change var names to work in existing script
-DOMAIN="transurban.com"
-ASN="56265" 				# ASN Optional but prefered!
+DOMAIN=""
+ASN="" 				# ASN Optional but prefered!
 
 
 # Get asn data list 	(Uncomment if you dont already have the ASN data)
