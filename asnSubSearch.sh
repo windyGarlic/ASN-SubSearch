@@ -1,15 +1,22 @@
 #!/bin/bash
 
+# subSeachASN 
+
+# TO DO
+# 	Create asn.masterlist collecting: - company -  asn - ipRange - ip/CIDR - database text file 
+# 	Validate changes to original subdomain list
+
 # WHAT IT CAN DO
 # 	Creates file: <company>.ipRange - a list all ip ranges owned by companies ASN
 # 	Creates file: <company>.ipList - unpacked list of all IP in ASN IP allranges
 # 	Creates file: <company>.newSubs - A list of the newly found subdomains
 #	Runs every IP through hakip2host & dnsx to resolve and validate endpoints
+# 	Adds newly discovered subdomains to specified file <CURRENT_SUBDOMAIN_LIST> (Makes backup of original)
 
 
 # [+]  Read these vaules in through args or change var names to work in existing script
-DOMAIN=""
-ASN="" 				# ASN Optional but prefered!
+DOMAIN="aksjfdnjn.com"
+ASN="55924" 				# ASN Optional but prefered!
 
 
 # Get asn data list 	(Uncomment if you dont already have the ASN data)
@@ -53,34 +60,36 @@ if [[ -s $COMPANY.ipRange ]]; then
             echo "$current_ip" >> $COMPANY.ipList
         done
     done < $COMPANY.ipRange
-else
+    else
     echo "[-] Could not find any IP range searching for $COMPANY."
     read -p "Would you like to provide a new company name? (Y/n): " CHOICE
-    if [[ CHOICE -eq 'n' ]]; then
+    
+    if [[ "$CHOICE" == 'n' ]]; then
         echo "Exiting"
-        rm $COMPANY.ipRange
+        rm "$COMPANY.ipRange"
         exit 1 
-    elif [[ CHOICE -eq 'y' ]]; then 
+    elif [[ "$CHOICE" == 'y' ]]; then 
         read -p "Enter the new company name to search for: " COMPANY
-	    cat ip2asn-v4.tsv  | grep -i $ASN | grep -i $COMPANY | awk -F " " '{print$1" "$2}' >> $COMPANY.ipRange
+        cat ip2asn-v4.tsv | grep -i $ASN | grep -i $COMPANY | awk -F " " '{print$1" "$2}' >> "$COMPANY.ipRange"
     else
         echo "Invalid choice. Exiting."
         exit 1
     fi
 
-    if [[ -s $COMPANY.ipRange ]]; then
-        echo '[+] Found IP ranges'
-        while read line; do
-            start_ip=$(echo $line | awk -F " - " '{print $1}')
-            end_ip=$(echo $line | awk -F " - " '{print $2}')
-            start_int=$(ip_to_int "$start_ip")
-            end_int=$(ip_to_int "$end_ip")
 
-            for ((int = start_int; int <= end_int; int++)); do
-                current_ip=$(int_to_ip "$int")
-                echo "$current_ip" >> $COMPANY.ipList
-            done
-        done < $COMPANY.ipRange
+    if [[ -s $COMPANY.ipRange ]]; then
+    echo '[+] Found IP ranges'
+    while read line; do
+        start_ip=$(echo $line | awk -F " " '{print $1}')
+        end_ip=$(echo $line | awk -F " " '{print $2}')
+        start_int=$(ip_to_int "$start_ip")
+        end_int=$(ip_to_int "$end_ip")
+
+        for ((int = start_int; int <= end_int; int++)); do
+            current_ip=$(int_to_ip "$int")
+            echo "$current_ip" >> $COMPANY.ipList
+        done
+    done < $COMPANY.ipRange
     else
         echo 'Still not found. Exiting'
         exit 1
