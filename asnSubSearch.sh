@@ -74,7 +74,6 @@ if [[ -s $COMPANY.ipRange ]]; then
         exit 1
     fi
 
-
     if [[ -s $COMPANY.ipRange ]]; then
     echo '[+] Found IP ranges'
     while read line; do
@@ -94,25 +93,10 @@ if [[ -s $COMPANY.ipRange ]]; then
     fi
 fi
 
-# Creates list of all IP's contained in range
-for line in $(cat $COMPANY.ipRange); do
-    start_ip=$(echo $line | awk -F " - " '{print $1}')
-    end_ip=$(echo $line | awk -F " - " '{print $2}')
-    start_int=$(ip_to_int "$start_ip")
-    end_int=$(ip_to_int "$end_ip")
-
-    for ((int = start_int; int <= end_int; int++)); do
-        current_ip=$(int_to_ip "$int")
-        echo "$current_ip" >> $COMPANY.ipList
-    done
-done 
-
 cat $COMPANY.ipList | hakip2host | sort | uniq > $DOMAIN.newSubs.tmp 
 cat $DOMAIN.newSubs.tmp | awk -F " " '{print$3}' | sort | uniq > $DOMAIN.newSubs.sub 
 cat $DOMAIN.newSubs.sub | grep -v "*" | dnsx -silent > $COMPANY.newSubs
 
-# Add $DOMAIN.newSubs.sub to number of assets, otherwise uncomment this: 
 #rm $DOMAIN.newSubs.sub 
-
 rm $DOMAIN.newSubs.tmp 
-echo '[+] new subdomains found and stored as ' $COMPANY '.newSubs' 
+echo '[+] new subdomains found and stored as ' $COMPANY'.newSubs' 
